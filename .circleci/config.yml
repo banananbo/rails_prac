@@ -19,7 +19,7 @@ jobs:
           command: "echo Hello, World!"
   test:
     docker:
-      - image: circleci/ruby:2.6.6-node-browsers
+      - image: cimg/ruby:2.6.6-node-browsers
         environment:
           RAILS_ENV: test
     working_directory: ~/repo
