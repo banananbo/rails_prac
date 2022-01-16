@@ -26,6 +26,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: tawamure
+          command: bundle -v
+      - run:
           name: bundle install
           command: bundle install --path vendor/bundle
       - run:
