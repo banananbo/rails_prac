@@ -1,0 +1,9 @@
+- hosts: aws
+  tasks:
+    - debug: msg="hello world"
+    - debug: var=ansible_distribution
+    - name: install git
+      yum:
+        name: git
+        state: latest
+      become: yes
