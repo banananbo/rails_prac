@@ -8,6 +8,8 @@ set :keep_releases, 5
 
 set :branch, ENV['BRANCH'] || "main"
 
+append :linked_dirs, '.bundle'
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 

@@ -5,7 +5,8 @@
     environtment: production
     ruby_version: 2.6.6
     rbenv_root: /home/ec2-user/.rbenv
-    rbenv_bin: /home/ec2-user/.rbenv/libexec/rbenv 
+    rbenv_bin: /home/ec2-user/.rbenv/libexec/rbenv
+    bundler_version: 2.2.33 
   tasks:
     - debug: msg="hello world"
     - debug: var=ansible_distribution
@@ -54,5 +55,6 @@
     - name: 'bundlerインストール'
       gem:
         name: bundler
+        version: "{{bundler_version}}"
         user_install: no
         executable: /usr/local/rbenv/shims/gem
