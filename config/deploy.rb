@@ -8,7 +8,7 @@ set :keep_releases, 5
 
 set :branch, ENV['BRANCH'] || "main"
 
-append :linked_dirs, '.bundle'
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets bundle public/system public/assets}
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
