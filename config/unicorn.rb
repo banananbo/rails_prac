@@ -16,7 +16,7 @@ working_directory rails_root
 
 timeout 300
 
-listen 3001
+listen 3000
 listen "#{rails_root}/tmp/sockets/unicorn.sock"
 
 before_fork do |server, worker|
