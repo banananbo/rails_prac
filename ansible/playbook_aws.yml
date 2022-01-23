@@ -7,6 +7,11 @@
     rbenv_root: /home/ec2-user/.rbenv
     rbenv_bin: /home/ec2-user/.rbenv/libexec/rbenv
     bundler_version: 2.2.33 
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+
   tasks:
     - debug: msg="hello world"
     - debug: var=ansible_distribution
@@ -23,6 +28,11 @@
         - readline-devel
         - zlib-devel
         - libffi-devel
+        - sqlite-devel
+    - name: Install mysql-devel
+      yum: name={{ item }} state=latest
+      with_items:
+        - mysql-devel
     - name: 'Install rbenv'
       git:
         repo: https://github.com/sstephenson/rbenv.git
@@ -58,3 +68,37 @@
         version: "{{bundler_version}}"
         user_install: no
         executable: /usr/local/rbenv/shims/gem
+    
+    - name: Download nodejs
+      become: yes
+      shell: bash -lc 'curl -sSL https://rpm.nodesource.com/setup_10.x | bash - && yum -y install nodejs'
+
+    # - name: Install nginx
+    #   yum: name=nginx state=latest
+
+    # - name: Get Nginx package list
+    #   yum:
+    #     list: nginx~
+    #   register: pkg_list
+
+    # - name: Install Nginx if not installed
+    #   shell: amazon-linux-extras install nginx1.12
+    #   when: pkg_list.results | selectattr("yumstate", "match", "
+
+    - name: Enable to install nginx
+      shell: "amazon-linux-extras enable nginx1"
+      changed_when: False
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        enablerepo: amzn2extra-nginx1
+        state: present
+
+    - name: Set nginx service to start on boot
+      service: name=nginx enabled=true
+
+  #ここで、自前のconfファイルを設定する
+    - name: Put nginx.conf
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf backup=true mode=0644
+      notify: restart nginx
