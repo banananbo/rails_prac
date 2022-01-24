@@ -44,6 +44,36 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets bundle public/system pub
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
+# ここからUnicornの設定
+# Unicornのプロセスの指定
+set :unicorn_pid, -> { "#{shared_path}/tmp/pids/unicorn.pid" }
+
+# Unicornの設定ファイルの指定
+set :unicorn_config_path, -> { "#{current_path}/config/unicorn.rb" }
+
+# Unicornを再起動するための記述
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+  task :restart do
+    invoke 'unicorn:restart'
+  end
+end
+
+# namespace :deploy do
+#     task :start do
+#       run "bundle exec unicorn -c #{current_path}/config/unicorn.rb -E production -D"
+#     end
+  
+#     task :stop do
+#       run "kill -QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
+#     end
+
+#     task :restart do
+#       run "kill -USR2 `cat #{current_path}/tmp/pids/unicorn.pid`"
+#       run "kill -QUIT `cat #{current_path}/tmp/pids/unicorn.pid.oldbin`"
+#     end
+# end
+
 namespace :hogehoge do
     task :hello_world do
         puts "hello world!"
