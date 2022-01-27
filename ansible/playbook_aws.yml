@@ -6,7 +6,20 @@
     ruby_version: 2.6.6
     rbenv_root: /home/ec2-user/.rbenv
     rbenv_bin: /home/ec2-user/.rbenv/libexec/rbenv
-    bundler_version: 2.2.33 
+    bundler_version: 2.2.33
+
+    MYSQL:
+      SERVICE:
+        NAME: mysqld
+      DEFAULT_FILE: /root/.my.cnf
+      ROOT:
+        PASSWORD: rootuserpass
+      SERVER:
+        YUM:
+          NAME: mysql56-server
+      # PYTHON:
+      #   YUM:
+      #     NAME: MySQL-python27
 
   handlers:
     - name: restart nginx
@@ -29,10 +42,10 @@
         - zlib-devel
         - libffi-devel
         - sqlite-devel
-    - name: Install mysql-devel
-      yum: name={{ item }} state=latest
-      with_items:
-        - mysql-devel
+    # - name: Install mysql-devel
+    #   yum: name={{ item }} state=latest
+    #   with_items:
+    #     - mysql-devel
     - name: 'Install rbenv'
       git:
         repo: https://github.com/sstephenson/rbenv.git
@@ -73,18 +86,6 @@
       become: yes
       shell: bash -lc 'curl -sSL https://rpm.nodesource.com/setup_10.x | bash - && yum -y install nodejs'
 
-    # - name: Install nginx
-    #   yum: name=nginx state=latest
-
-    # - name: Get Nginx package list
-    #   yum:
-    #     list: nginx~
-    #   register: pkg_list
-
-    # - name: Install Nginx if not installed
-    #   shell: amazon-linux-extras install nginx1.12
-    #   when: pkg_list.results | selectattr("yumstate", "match", "
-
     - name: Enable to install nginx
       shell: "amazon-linux-extras enable nginx1"
       changed_when: False
@@ -102,3 +103,70 @@
     - name: Put nginx.conf
       template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf backup=true mode=0644
       notify: restart nginx
+
+          
+- name: start nginx
+  service:
+    name: "nginx"
+    state: restarted
+    enabled: yes
+
+- name: yum remove mariadb-*
+  yum:
+    name: "mariadb-*"
+    state: absent
+
+- name: yum localinstall
+  yum: 
+    name: "https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm"
+    state: present
+
+- name: Import Key of mysql repo
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+
+- name: install mysql
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - mysql-community-devel*
+    - mysql-community-server*
+    - MySQL-python
+    - pip
+
+- name: copy my.cnf
+  copy: 
+    src: templates/my.cnf.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    
+- name: start mysql
+  service:
+    name: "{{ MYSQL.SERVICE.NAME }}"
+    state: restarted
+    enabled: yes
+
+- pip:
+    name: pymysql
+
+- pip:
+    name: cryptography
+
+- name: get root password
+  shell: "grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log | awk -F ' ' '{print $(NF)}'"
+  register: root_password
+
+- name: update expired root user password
+  command: mysql --user root --password={{ root_password.stdout }} --connect-expired-password --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ MYSQL.ROOT.PASSWORD }}';"
+
+- name: create mysql client user
+  mysql_user:
+    login_user: root
+    login_password: "{{ MYSQL.ROOT.PASSWORD }}"
+    name: "web"
+    password: "web"
+    priv: '*.*:ALL,GRANT'
+    state: present
+    host: '%' # hostを設定しないと、localhostからの接続しか受け付けない

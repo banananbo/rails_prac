@@ -2,7 +2,8 @@
 set :rails_env, 'production'
 
 # サーバー、ユーザー、ロールの指定
-server "ec2-52-195-3-216.ap-northeast-1.compute.amazonaws.com", roles: %w{app db web}
+# server "ec2-52-195-3-216.ap-northeast-1.compute.amazonaws.com", roles: %w{app db web}
+server "ec2-54-199-42-213.ap-northeast-1.compute.amazonaws.com", roles: %w{app db web}
 
 set :deploy_to, "/home/ec2-user/captest"
 
