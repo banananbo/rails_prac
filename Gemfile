@@ -44,6 +44,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano3-unicorn'
+  gem 'pry-rails'
 # end
 
 # group :development do
@@ -67,3 +68,11 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'unicorn'
+
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
+gem 'dotenv-rails'
+gem "omniauth_openid_connect"
+gem 'brakeman'
