@@ -1,0 +1,14 @@
+name: brakeman
+on:
+  - pull_request
+jobs:
+  brakeman:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+      - run: gem install --no-document bundler
+      - run: bundle install --quiet --jobs 4 --retry 3
+      - run: bundle exec brakeman -Aqw1 --no-pager
