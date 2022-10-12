@@ -215,7 +215,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    rails (5.2.6)
+    rails (5.2.7)
       actioncable (= 5.2.6)
       actionmailer (= 5.2.6)
       actionpack (= 5.2.6)
