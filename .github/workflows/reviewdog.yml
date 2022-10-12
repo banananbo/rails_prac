@@ -17,3 +17,4 @@ jobs:
           brakeman_version: gemfile
           reporter: github-pr-review # Default is github-pr-check
           filter_mode: nofilter
+          fail_on_error: true
