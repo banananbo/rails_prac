@@ -16,3 +16,4 @@ jobs:
         with:
           brakeman_version: gemfile
           reporter: github-pr-review # Default is github-pr-check
+          filter_mode: nofilter
