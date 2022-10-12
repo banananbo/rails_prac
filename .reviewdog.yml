@@ -1,0 +1,13 @@
+runner:
+  rubocop:
+    cmd: bundle exec rubocop
+  brakeman:
+    cmd: bundle exec brakeman --quiet --format tabs
+  reek:
+    cmd: bundle exec reek --single-line
+  haml-lint:
+    cmd: bundle exec haml-lint
+  eslint:
+    cmd: yarn run eslint app/**/*.js
+  stylelint:
+    cmd: yarn run stylelint app/**/*.{css,scss}
