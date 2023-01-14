@@ -1,0 +1,10 @@
+name: Dependabot auto check
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  dependabot-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello World!"
