@@ -3,8 +3,18 @@ name: Dependabot auto check
 on: 
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   dependabot-automation:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello World!"
+      - run: echo github.actor
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
